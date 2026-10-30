@@ -1,0 +1,24 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#172554"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><title>支払い方法判定AI</title><style>
+*{box-sizing:border-box}body{margin:0;padding:22px 16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f3f5fa;color:#172033}main{max-width:520px;margin:auto}.panel{background:white;border-radius:20px;padding:20px;margin:15px 0;box-shadow:0 5px 22px #18264a0d}header{display:flex;gap:12px;align-items:center;margin:8px 0 25px}.logo{background:#172554;color:white;border-radius:15px;padding:12px;font-size:24px}h1{font-size:21px;margin:0}.sub,.note,.small{font-size:12px;color:#778197;line-height:1.6}label{font-weight:700;font-size:13px}input{width:100%;padding:15px;border:1px solid #d9deea;border-radius:13px;font-size:16px;margin-top:9px}button{border:0;border-radius:13px;padding:14px;font-weight:700;font-size:15px;cursor:pointer}.primary{width:100%;background:#172554;color:white;margin-top:12px}.result{display:none;border:1px solid #dce6dc}.tag{color:#24713a;background:#e7f5e9;border-radius:99px;padding:5px 10px;font-size:12px}.winner{font-size:24px;font-weight:800;margin:15px 0 8px}.detail{font-size:14px;line-height:1.7;color:#45516a}.cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}.method{background:#f5f7fb;border-radius:13px;padding:13px;font-size:13px;font-weight:650}.method span{display:block;color:#718097;font-size:11px;font-weight:400;margin-top:4px}.history-head{display:flex;justify-content:space-between}.clear{background:none;color:#778197;font-size:12px;padding:0}.history-item{padding:10px 0;border-bottom:1px solid #edf0f5;font-size:13px}.empty,footer{font-size:12px;color:#8992a4;line-height:1.7}footer{text-align:center}
+</style></head><body><main><header><div class="logo">￥</div><div><h1>支払い方法判定AI</h1><div class="sub">いつもの決済手段からお得な方法をチェック</div></div></header>
+<section class="panel"><label for="shop">お店の名前</label><input id="shop" placeholder="例：マクドナルド、ファミマ、ロピア"><button class="primary" id="judge">最適な支払い方法を判定</button><p class="note">楽天カード／楽天ペイ（楽天キャッシュ）／三井住友NL／dカード</p></section>
+<section class="panel result" id="result" aria-live="polite"><span class="tag" id="status"></span><div class="winner" id="winner"></div><div class="detail" id="detail"></div><p class="note" id="caution"></p></section>
+<section class="panel"><label>判定メンバー</label><div class="cards"><div class="method">🟥 楽天カード<span>基本の候補</span></div><div class="method">🟪 楽天ペイ<span>楽天キャッシュ払い</span></div><div class="method">🟦 三井住友NL<span>対象店の特典を優先</span></div><div class="method">🟥 dカード<span>対象特典を確認</span></div></div></section>
+<section class="panel"><div class="history-head"><b>最近の判定</b><button class="clear" id="clear">履歴を削除</button></div><div id="history" class="empty">まだ履歴はありません</div></section>
+<footer>無料の簡易版です。最新の還元率・決済対応を自動取得する機能はありません。会計前に公式条件をご確認ください。</footer></main>
+<script>
+const rules=[
+{n:["マクドナルド","マック"],t:"三井住友カード（NL）",d:"対象条件を満たすスマホのVisa／Mastercardタッチ決済を優先。モバイルオーダーは条件を別途確認。",c:"還元率・対象決済は変更される場合があります。"},
+{n:["ファミリーマート","ファミマ"],t:"楽天ペイ（楽天キャッシュ払い）",d:"楽天ポイントカードを提示できる場合は忘れずに提示。",c:"ポイント付与条件は変更される場合があります。"},
+{n:["ロピア"],t:"現金",d:"ロピアは現金払いを基本候補にしています。",c:"店舗ごとの対応を会計前に確認してください。"},
+{n:["リンガーハット"],t:"楽天ペイ（楽天キャッシュ払い）",d:"楽天系決済を優先する初期ルールです。",c:"一部店舗・注文方法では異なる場合があります。"},
+{n:["叙々苑"],t:"楽天カード",d:"店頭会計では楽天カードを基本候補にしています。",c:"店舗・会計方法によって異なる場合があります。"}
+];
+const fallback={t:"楽天ペイ（楽天キャッシュ払い）",d:"特別な高還元特典が登録されていないため、楽天系決済を優先。楽天ペイが使えない・不利な場合は楽天カードを候補にしてください。",c:"この店舗の最新の決済対応・還元特典は未確認です。"};
+const $=x=>document.getElementById(x);
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function history(){let a=JSON.parse(localStorage.getItem("payhist")||"[]");$("history").innerHTML=a.length?a.map(x=>`<div class="history-item"><b>${esc(x.n)}：${esc(x.t)}</b><div class="small">${esc(x.date)}</div></div>`).join(""):"まだ履歴はありません";}
+function judge(){let n=$("shop").value.trim();if(!n){$("shop").focus();return}let r=rules.find(x=>x.n.some(k=>n.includes(k)))||fallback;$("status").textContent=rules.includes(r)?"登録済み店舗":"基本ルールで判定";$("winner").textContent=r.t;$("detail").textContent=r.d;$("caution").textContent=r.c;$("result").style.display="block";let a=JSON.parse(localStorage.getItem("payhist")||"[]");a.unshift({n,t:r.t,date:new Date().toLocaleDateString("ja-JP")});localStorage.setItem("payhist",JSON.stringify(a.slice(0,8)));history()}
+$("judge").onclick=judge;$("shop").onkeydown=e=>{if(e.key==="Enter")judge()};$("clear").onclick=()=>{localStorage.removeItem("payhist");history()};history();
+if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script></body></html>

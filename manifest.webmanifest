@@ -1,0 +1,16 @@
+{
+  "name": "支払い方法判定AI",
+  "short_name": "支払い判定",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f5fa",
+  "theme_color": "#172554",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
