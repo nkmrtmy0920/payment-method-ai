@@ -1,25 +1,87 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#172554"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><title>支払い方法判定AI</title><style>
-*{box-sizing:border-box}body{margin:0;padding:22px 16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f3f5fa;color:#172033}main{max-width:520px;margin:auto}.panel{background:white;border-radius:20px;padding:20px;margin:15px 0;box-shadow:0 5px 22px #18264a0d}header{display:flex;gap:12px;align-items:center;margin:8px 0 25px}.logo{background:#172554;color:white;border-radius:15px;padding:12px;font-size:24px}h1{font-size:21px;margin:0}.sub,.note,.small{font-size:12px;color:#778197;line-height:1.6}label{font-weight:700;font-size:13px}input{width:100%;padding:15px;border:1px solid #d9deea;border-radius:13px;font-size:16px;margin-top:9px}button{border:0;border-radius:13px;padding:14px;font-weight:700;font-size:15px;cursor:pointer}.primary{width:100%;background:#172554;color:white;margin-top:12px}.result{display:none;border:1px solid #dce6dc}.tag{color:#24713a;background:#e7f5e9;border-radius:99px;padding:5px 10px;font-size:12px}.winner{font-size:24px;font-weight:800;margin:15px 0 8px}.detail{font-size:14px;line-height:1.7;color:#45516a}.cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}.method{background:#f5f7fb;border-radius:13px;padding:13px;font-size:13px;font-weight:650}.method span{display:block;color:#718097;font-size:11px;font-weight:400;margin-top:4px}.history-head{display:flex;justify-content:space-between}.clear{background:none;color:#778197;font-size:12px;padding:0}.history-item{padding:10px 0;border-bottom:1px solid #edf0f5;font-size:13px}.empty,footer{font-size:12px;color:#8992a4;line-height:1.7}footer{text-align:center}
-</style></head><body><main><header><div class="logo">￥</div><div><h1>支払い方法判定AI</h1><div class="sub">いつもの決済手段からお得な方法をチェック</div></div></header>
-<section class="panel"><label for="shop">お店の名前</label><input id="shop" placeholder="例：マクドナルド、ファミマ、ロピア"><button class="primary" id="judge">最適な支払い方法を判定</button><p class="note">楽天カード／楽天ペイ（楽天キャッシュ）／三井住友NL／dカード</p></section>
-<section class="panel result" id="result" aria-live="polite"><span class="tag" id="status"></span><div class="winner" id="winner"></div><div class="detail" id="detail"></div><p class="note" id="caution"></p></section>
-<section class="panel"><label>判定メンバー</label><div class="cards"><div class="method">🟥 楽天カード<span>基本の候補</span></div><div class="method">🟪 楽天ペイ<span>楽天キャッシュ払い</span></div><div class="method">🟦 三井住友NL<span>対象店の特典を優先</span></div><div class="method">🟥 dカード<span>対象特典を確認</span></div></div></section>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172554">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<title>支払い方法判定AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:22px 16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f5fa;color:#172033}main{max-width:560px;margin:auto}.panel{background:white;border-radius:20px;padding:20px;margin:15px 0;box-shadow:0 5px 22px #18264a0d}header{display:flex;gap:12px;align-items:center;margin:8px 0 25px}.logo{background:#172554;color:white;border-radius:15px;padding:12px;font-size:24px}h1{font-size:21px;margin:0}.sub,.note,.small{font-size:12px;color:#778197;line-height:1.65}label{font-weight:700;font-size:13px;display:block;margin-top:4px}input,select{width:100%;padding:15px;border:1px solid #d9deea;border-radius:13px;font-size:16px;margin-top:9px;background:#fff;color:#172033}button{border:0;border-radius:13px;padding:14px;font-weight:700;font-size:15px;cursor:pointer}.primary{width:100%;background:#172554;color:white;margin-top:12px}.result{display:none;border:1px solid #dce6dc}.tag{display:inline-block;color:#24713a;background:#e7f5e9;border-radius:99px;padding:5px 10px;font-size:12px}.winner{font-size:23px;font-weight:800;margin:13px 0 4px}.rate{font-size:18px;font-weight:750;color:#1d4d85;margin:0 0 10px}.detail{font-size:14px;line-height:1.75;color:#45516a}.cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}.method{background:#f5f7fb;border-radius:13px;padding:13px;font-size:13px;font-weight:650}.method span{display:block;color:#718097;font-size:11px;font-weight:400;margin-top:4px}.history-head{display:flex;justify-content:space-between}.clear{background:none;color:#778197;font-size:12px;padding:0}.history-item{padding:10px 0;border-bottom:1px solid #edf0f5;font-size:13px}.empty,footer{font-size:12px;color:#8992a4;line-height:1.7}footer{text-align:center;margin:18px 2px}.sources a{color:#526b9a;text-decoration:none}.sources a:hover{text-decoration:underline}.hint{background:#f5f7fb;border-radius:12px;padding:11px 12px;margin-top:12px;font-size:12px;color:#67738a;line-height:1.65}
+</style>
+</head>
+<body><main>
+<header><div class="logo">￥</div><div><h1>支払い方法判定AI</h1><div class="sub">いつもの決済手段からお得な方法をチェック</div></div></header>
+<section class="panel">
+<label for="shop">お店の名前</label>
+<input id="shop" placeholder="例：マクドナルド、ファミマ、ツルハ">
+<label for="scene">利用方法</label>
+<select id="scene"><option value="store">店頭で支払う</option><option value="mobile">モバイルオーダー・アプリ注文</option></select>
+<button class="primary" id="judge">最適な支払い方法を判定</button>
+<p class="note">楽天カード／楽天ペイ（楽天キャッシュ）／三井住友カード（NL）／dカード</p>
+<div class="hint">還元率は最大値・条件付きの表示です。店頭とアプリ注文で対象決済が違う場合は分けて判定します。</div>
+</section>
+<section class="panel result" id="result" aria-live="polite">
+<span class="tag" id="status"></span><div class="winner" id="winner"></div><div class="rate" id="rate"></div><div class="detail" id="detail"></div><p class="note" id="caution"></p>
+</section>
+<section class="panel"><label>判定メンバー</label><div class="cards">
+<div class="method">🟥 楽天カード<span>基本1％還元</span></div>
+<div class="method">🟪 楽天ペイ<span>楽天キャッシュ払い</span></div>
+<div class="method">🟦 三井住友NL<span>対象店はスマホタッチ決済</span></div>
+<div class="method">🟥 dカード<span>特約店の上乗せを確認</span></div>
+</div></section>
 <section class="panel"><div class="history-head"><b>最近の判定</b><button class="clear" id="clear">履歴を削除</button></div><div id="history" class="empty">まだ履歴はありません</div></section>
-<footer>無料の簡易版です。最新の還元率・決済対応を自動取得する機能はありません。会計前に公式条件をご確認ください。</footer></main>
+<footer>店舗・決済条件の登録データ：2026年10月31日確認<br>無料の簡易版です。最新の還元率・決済対応を自動取得する機能はありません。会計前に公式条件をご確認ください。<div class="sources"><a href="https://www.smbc-card.com/mem/cardinfo/23/cardinfo9001629.jsp" target="_blank" rel="noopener">三井住友カード公式</a> ・ <a href="https://pay.rakuten.co.jp/topics/pointprogram/" target="_blank" rel="noopener">楽天ペイ公式</a> ・ <a href="https://www.matsukiyococokara-online.com/point/dpoint" target="_blank" rel="noopener">マツキヨココカラ公式</a></div></footer>
+</main>
 <script>
-const rules=[
-{n:["セブンイレブン","セブン‐イレブン","セブン-イレブン","セブン"],t:"三井住友カード（NL）",d:"スマホのVisa／Mastercardタッチ決済を優先。セブン‐イレブンアプリの会員コード提示と所定のVポイント連携設定も行うと、最大10%還元が目安。",c:"カード現物・iDは対象外。店舗や特典条件を確認してください。"},
-{n:["マクドナルド","マック"],t:"三井住友カード（NL）",d:"対象条件を満たすスマホのVisa／Mastercardタッチ決済を優先。モバイルオーダーは条件を別途確認。",c:"還元率・対象決済は変更される場合があります。"},
-{n:["ファミリーマート","ファミマ"],t:"楽天ペイ（楽天キャッシュ払い）",d:"楽天ポイントカードを提示できる場合は忘れずに提示。",c:"ポイント付与条件は変更される場合があります。"},
-{n:["ロピア"],t:"現金",d:"ロピアは現金払いを基本候補にしています。",c:"店舗ごとの対応を会計前に確認してください。"},
-{n:["リンガーハット"],t:"楽天ペイ（楽天キャッシュ払い）",d:"楽天系決済を優先する初期ルールです。",c:"一部店舗・注文方法では異なる場合があります。"},
-{n:["叙々苑"],t:"楽天カード",d:"店頭会計では楽天カードを基本候補にしています。",c:"店舗・会計方法によって異なる場合があります。"}
+// 優先順位：三井住友NL（7%以上）→ dカード特約店（3%）→ 楽天ペイ（最大2.5%）
+// 店頭の高還元プログラムとモバイルオーダーの対象店は分けて登録。
+const smbcStores=[
+"セイコーマート","セコマ","タイエー","ハマナスクラブ","ハセガワストア","セブンイレブン","セブン‐イレブン","セブン-イレブン","ポプラ","生活彩家","ミニストップ","ローソン","ナチュラルローソン","ローソンストア100","ローソンスリーエフ",
+"マクドナルド","マック","マクド","モスバーガー","モス","モスバーガー＆カフェ","モスバーガーアンドカフェ","ケンタッキーフライドチキン","ケンタッキー","ケンタ","KFC","吉野家","フレッシュネスバーガー","サイゼリヤ","サイゼ","ガスト","バーミヤン","しゃぶ葉","ジョナサン","夢庵","ステーキガスト","から好し","むさしの森珈琲","藍屋","グラッチェガーデンズ","魚屋路","chawan","ラオハナ","La Ohana","とんから亭","ゆめあん食堂","桃菜","八郎そば","三〇三","すき家","はま寿司","ココス","ドトールコーヒーショップ","ドトール","エクセルシオールカフェ","エクセルシオール","かっぱ寿司"
 ];
-const fallback={t:"楽天ペイ（楽天キャッシュ払い）",d:"特別な高還元特典が登録されていないため、楽天系決済を優先。楽天ペイが使えない・不利な場合は楽天カードを候補にしてください。",c:"この店舗の最新の決済対応・還元特典は未確認です。"};
+const mobileSmbcStores=["マクドナルド","マック","マクド","モスバーガー","モス","モスバーガー＆カフェ","モスバーガーアンドカフェ","ケンタッキーフライドチキン","ケンタッキー","ケンタ","KFC","吉野家","すき家"];
+const rakutenStores=[
+"ファミリーマート","ファミマ","ファミマ!!","デイリーヤマザキ","ニューヤマザキデイリーストア","ヤマザキデイリーストアー","ポプラ","生活彩家",
+"SEIYU","西友","LIVIN","リヴィン","サニー","SUNNY","東急ストア","マツゲン","大阪屋ショップ","フレスタ","リカーズ","フジ","ニチエー","フジグラン","ピュアークック","にしてつストア","レガネット","レガネットマルシェ","レガネットDAILYENTERTAINMENTSQUARE","レガネットキュート","スピナ","スピナラソリエ","あんくる夢市場","あんくるふじや","サンプラザ","業務用食品スーパー","プロマート百石","ホームセンターリッチ","フードマーケットマム","主婦の店","リベロ","リベロマム","PRIME FOODSMARKET","プライムフーズマーケット","サンフレッシュブルーム","ラコアンドエース","コモディイイダ","エースワン","エーマックス","スーパーマーケットいちい","フォーズマーケット","ICHII’SロシナンテMARKET","イチイズロシナンテマーケット","リカーズ酒蔵","鎌倉屋","ヤオヒコ","大近",
+"ツルハドラッグ","ツルハ","くすりの福太郎","ウォンツ","ドラッグストアウェルネス","ウェルネス","レディ薬局","レディ","B&Dドラッグストア","B&D","杏林堂","ドラッグイレブン","ダイコクドラッグ","ダイコク","サンドラッグ","ドラッグトップス","ドラッグストアセキ","セキ薬品","ヤックス","ヤックスドラッグ","yac's","アタック5","ATACK5","アカカベ",
+"グランブッフェ","ミスタードーナツ","ミスド","すき家","はま寿司","ココス","ジョリーパスタ","ビッグボーイ","ヴィクトリアステーション","華屋与兵衛","久兵衛屋","熟成焼肉いちばん","牛庵","宝島","モリバコーヒー","カフェミラノ","吉野家","リンガーハット","濱かつ","サンマルクカフェ","バケット","BAQET","鎌倉パスタ","神戸元町ドリア","倉敷珈琲","台湾小籠包","幸楽苑","ほっかほっか亭","PRONTO","プロント","ロイヤルホスト","ロイホ","はなまる",
+"ジョーシン","Joshin","エディオン","100満ボルト","ビックカメラ","ソフマップ","コジマ",
+"ライトオン","Right-on","コナカ","SUIT SELECT","スーツセレクト","ディファレンス","DIFFERENCE","フタタ","つるやゴルフ","スポーツアルペン","スポーツデポ","ゴルフ5","好日山荘",
+"大丸","松坂屋","東急百貨店","渋谷ストリーム","渋谷ヒカリエShinQs","渋谷ヒカリエ","東急フードショー","プラスクスタイル","二子玉川ライズ","武蔵小杉東急スクエア",
+"コスモ石油","キグナス石油","みんなのガレージ","東急ハンズ","ハンズ","ハンズビー","ハンズ ビー","コーナン","コーナンPRO","ダイシン","ユニディ","ペッツマム","丸善","ジュンク堂書店","アリさんマークの引越社"
+];
+const rules=[
+{n:["セブンイレブン","セブン‐イレブン","セブン-イレブン","セブン"],t:"三井住友カード（NL）",rate:"最大10％",d:"店頭では、セブン‐イレブンアプリの会員コードを提示してから、三井住友カード（NL）を登録したスマホのVisa／Mastercardタッチ決済で支払うのが最優先。",c:"最大10％には、VpassとVポイントのID連携、セブン‐イレブンアプリとVポイントの連携・会員コード提示が必要です。カード現物のタッチ、iD、差し込みは対象外。タバコ等は追加特典の対象外。"},
+{n:smbcStores,t:"三井住友カード（NL）",rate:"7％",d:"店頭では、三井住友カード（NL）を登録したスマホのVisa／Mastercardタッチ決済を優先。スマホをかざして支払ってください。",c:"カード現物のタッチ、iD、カード差し込み・磁気取引は対象外。商業施設内など一部対象外店舗あり。一定額を超えると対象外の差し込み決済になることがあります。"},
+{n:["マツモトキヨシ","マツキヨ","ココカラファイン","ココカラ"],t:"dカード",rate:"3％相当",d:"dカード（Visa／Mastercard）またはdカード iDで支払うのが優先。",c:"マツモトキヨシ・ココカラファインの特約店対象店舗が前提。対象外店舗・商品・サービスがあります。店頭の最新条件を確認してください。"},
+{n:["ロピア"],t:"現金",rate:"ポイント高還元対象外",d:"ロピアは現金払いを基本候補にしています。",c:"店舗ごとの対応を会計前に確認してください。"},
+{n:["叙々苑"],t:"楽天カード",rate:"通常1％",d:"店頭会計では楽天カードを基本候補にしています。",c:"店舗・会計方法によって異なる場合があります。"},
+{n:rakutenStores,t:"楽天ペイ（楽天キャッシュ払い）",rate:"最大2.5％",d:"楽天ポイントカードを先にアプリで提示し、その後、楽天ペイ残高（楽天キャッシュ）のコード／QR払いをしてください。",c:"最大2.5％には、所定のカウント期間中に対象アプリの楽天ポイントカードを2回以上提示して1ポイント以上獲得する条件があります。条件未達成時は楽天ペイ残高分が最大1％。店舗ごとにポイントカード提示率が異なり、店舗・商品・サービスによって対象外の場合があります。"}
+];
+const fallback={t:"楽天ペイ（楽天キャッシュ払い）",rate:"通常1％が基本",d:"特別な高還元特典が登録されていないため、楽天ペイ残高払いを候補にします。楽天ペイが使えない・不利な場合は楽天カードを選んでください。",c:"この店舗の最新の決済対応・還元特典は未確認です。楽天ペイ残高の通常還元率や店舗対応を会計前に確認してください。"};
+const fallbackMobile={t:"楽天カード（注文アプリが対応している場合）",rate:"通常1％が基本",d:"店頭向けの楽天ポイントカード提示＋楽天ペイの最大2.5％プログラムは、モバイルオーダー・ネット決済には適用されません。アプリが楽天カード払いに対応している場合は楽天カードを候補にしてください。",c:"この注文アプリでの決済対応・ポイント付与条件は未確認です。アプリ内の支払方法とポイント条件を確認してください。"};
+const mobileRule={n:mobileSmbcStores,t:"三井住友カード（NL）",rate:"7％",d:"対象のモバイルオーダーで三井住友カード（NL）を支払方法に指定してください。",c:"対象はマクドナルド、モスバーガー、ケンタッキーフライドチキン、吉野家、すき家等の対象モバイルオーダーです。注文アプリ内の対象支払方法・対象店舗であることを確認してください。"};
+const starbucksMobile={n:["スターバックス","スタバ"],t:"三井住友カード（NL）",rate:"7％",d:"スターバックス公式アプリまたはApp Clipを経由し、Apple Payで三井住友カード（NL）を使って支払う場合が対象です。",c:"スターバックス カードへのチャージは対象外です。店頭の通常会計とは条件が異なります。"};
 const $=x=>document.getElementById(x);
-function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function history(){let a=JSON.parse(localStorage.getItem("payhist")||"[]");$("history").innerHTML=a.length?a.map(x=>`<div class="history-item"><b>${esc(x.n)}：${esc(x.t)}</b><div class="small">${esc(x.date)}</div></div>`).join(""):"まだ履歴はありません";}
-function judge(){let n=$("shop").value.trim();if(!n){$("shop").focus();return}let r=rules.find(x=>x.n.some(k=>n.includes(k)))||fallback;$("status").textContent=rules.includes(r)?"登録済み店舗":"基本ルールで判定";$("winner").textContent=r.t;$("detail").textContent=r.d;$("caution").textContent=r.c;$("result").style.display="block";let a=JSON.parse(localStorage.getItem("payhist")||"[]");a.unshift({n,t:r.t,date:new Date().toLocaleDateString("ja-JP")});localStorage.setItem("payhist",JSON.stringify(a.slice(0,8)));history()}
+function norm(s){return s.toLowerCase().replace(/[\s　・･‐‑–—ー-]/g,"");}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function history(){let a=[];try{a=JSON.parse(localStorage.getItem("payhist")||"[]")}catch(e){}$("history").innerHTML=a.length?a.map(x=>`<div class="history-item"><b>${esc(x.n)}：${esc(x.t)}</b><div class="small">${esc(x.scene)} ・ ${esc(x.date)}</div></div>`).join(""):"まだ履歴はありません";}
+function findMatch(list,n){return list.find(x=>x.n.some(k=>n.includes(norm(k))));}
+function judge(){
+ const raw=$("shop").value.trim();if(!raw){$("shop").focus();return}
+ const n=norm(raw),scene=$("scene").value;let r;
+ if(scene==="mobile"){
+   r=findMatch([starbucksMobile,mobileRule],n)||fallbackMobile;
+ }else{
+   r=findMatch(rules,n)||fallback;
+ }
+ const registered=r!==fallback&&r!==fallbackMobile;
+ $("status").textContent=(registered?"登録済み店舗":"基本ルールで判定")+(scene==="mobile"?"・アプリ注文":"・店頭");
+ $("winner").textContent=r.t;$("rate").textContent=r.rate||"";$("detail").textContent=r.d;$("caution").textContent=r.c;$("result").style.display="block";
+ let a=[];try{a=JSON.parse(localStorage.getItem("payhist")||"[]")}catch(e){}a.unshift({n:raw,t:r.t,scene:scene==="mobile"?"アプリ注文":"店頭",date:new Date().toLocaleDateString("ja-JP")});localStorage.setItem("payhist",JSON.stringify(a.slice(0,8)));history();
+}
 $("judge").onclick=judge;$("shop").onkeydown=e=>{if(e.key==="Enter")judge()};$("clear").onclick=()=>{localStorage.removeItem("payhist");history()};history();
-if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=2",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));
 </script></body></html>
