@@ -58,6 +58,7 @@ const rules=[
 {n:["マツモトキヨシ","マツキヨ","ココカラファイン","ココカラ"],t:"dカード",rate:"3％相当",d:"dカード（Visa／Mastercard）またはdカード iDで支払うのが優先。",c:"マツモトキヨシ・ココカラファインの特約店対象店舗が前提。対象外店舗・商品・サービスがあります。店頭の最新条件を確認してください。"},
 {n:["ロピア"],t:"現金",rate:"ポイント高還元対象外",d:"ロピアは現金払いを基本候補にしています。",c:"店舗ごとの対応を会計前に確認してください。"},
 {n:["叙々苑"],t:"楽天カード",rate:"通常1％",d:"店頭会計では楽天カードを基本候補にしています。",c:"店舗・会計方法によって異なる場合があります。"},
+{n:["業務スーパー","業務スーパ"],t:"現金",rate:"この店舗は現金のみ",d:"お近くの業務スーパーは現金払いのみとのことなので、現金で支払ってください。",c:"この設定はお近くの利用店舗向けです。業務スーパー全店が現金のみという意味ではありません。ほかの店舗では決済方法が異なる場合があります。"},
 {n:rakutenStores,t:"楽天ペイ（楽天キャッシュ払い）",rate:"最大2.5％",d:"楽天ポイントカードを先にアプリで提示し、その後、楽天ペイ残高（楽天キャッシュ）のコード／QR払いをしてください。",c:"最大2.5％には、所定のカウント期間中に対象アプリの楽天ポイントカードを2回以上提示して1ポイント以上獲得する条件があります。条件未達成時は楽天ペイ残高分が最大1％。店舗ごとにポイントカード提示率が異なり、店舗・商品・サービスによって対象外の場合があります。"}
 ];
 const fallback={t:"楽天ペイ（楽天キャッシュ払い）",rate:"通常1％が基本",d:"特別な高還元特典が登録されていないため、楽天ペイ残高払いを候補にします。楽天ペイが使えない・不利な場合は楽天カードを選んでください。",c:"この店舗の最新の決済対応・還元特典は未確認です。楽天ペイ残高の通常還元率や店舗対応を会計前に確認してください。"};
@@ -83,5 +84,5 @@ function judge(){
  let a=[];try{a=JSON.parse(localStorage.getItem("payhist")||"[]")}catch(e){}a.unshift({n:raw,t:r.t,scene:scene==="mobile"?"アプリ注文":"店頭",date:new Date().toLocaleDateString("ja-JP")});localStorage.setItem("payhist",JSON.stringify(a.slice(0,8)));history();
 }
 $("judge").onclick=judge;$("shop").onkeydown=e=>{if(e.key==="Enter")judge()};$("clear").onclick=()=>{localStorage.removeItem("payhist");history()};history();
-if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=2",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));
+if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=3",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));
 </script></body></html>
